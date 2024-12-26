@@ -11,6 +11,8 @@ import "./interfaces/IChainlinkOracle.sol";
 import "@uniswap/v2-core/contracts/libraries/UQ112x112.sol";
 import "@uniswap/v2-core/contracts/libraries/Math.sol";
 
+import "hardhat/console.sol";
+
 
 contract Wrapper {
     using SafeMath  for uint;
@@ -38,8 +40,14 @@ contract Wrapper {
         uint256 amountTokenMin,
         uint256 deadline
     ) external returns(uint256 amountCoin, uint256 amountToken, uint256 liquidity) {
+        IERC20(token).approve(address(router), amountToken);
+        IERC20(coin).approve(address(router), amountCoin);
+        console.log("!");
+
         require(IERC20(coin).allowance(address(this), address(router)) >= amountCoinDesired, "Insufficient coin allowance");
+        console.log("!!");
         require(IERC20(token).allowance(address(this), address(router)) >= amountTokenDesired, "Insufficient token allowance");
+        console.log("!!!");
 
         (amountCoin, amountToken, liquidity) = router.addLiquidity(
             coin,
@@ -51,6 +59,7 @@ contract Wrapper {
             msg.sender,
             deadline
         );
+        console.log(amountCoin, amountToken, liquidity);
     }
 
     function addLiqudityCoin(uint256 coinAmount) external returns(uint256 amountCoin, uint256 amountToken, uint256 liquidity) {

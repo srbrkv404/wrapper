@@ -2,6 +2,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
 const { expect } = require("chai");
 const { ethers, network } = require("hardhat");
+import { time } from "@nomicfoundation/hardhat-network-helpers";
 
 
 describe("Wrapper", function (){
@@ -31,14 +32,13 @@ describe("Wrapper", function (){
     describe("Deployment", function() {
         it("Should be deployed", async function() {
             const {acc1, wrapper } = await loadFixture(deploy);
-            console.log(acc1.address);
             expect(wrapper.target).to.be.properAddress;
         }).timeout(1000000);
     });
 
     describe("Work", function() {
         it("Should work", async function() {
-            const {acc1} = await loadFixture(deploy);
+            const {acc1, wrapper, token , usdt } = await loadFixture(deploy);
 
             const usdtAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
             const usdt_holder = "0x974CaA59e49682CdA0AD2bbe82983419A2ECC400";
@@ -49,15 +49,20 @@ describe("Wrapper", function (){
             });
             
             const holder = await ethers.getSigner(usdt_holder);
-            const usdt = await ethers.getContractAt("IERC20", usdtAddress);
 
-            console.log(await usdt.balanceOf(usdt_holder));
-            console.log(await usdt.balanceOf(acc1.address));
+            await usdt.connect(holder).transfer(acc1.address, ethers.parseUnits("100000", 6));
 
-            await usdt.connect(holder).transfer(acc1.address, ethers.parseUnits("1000", 6));
+            const coinAmount = ethers.parseUnits("100000", 6);
+            const tokenAmount = ethers.parseEther("1");
 
-            console.log(await usdt.balanceOf(usdt_holder));
-            console.log(await usdt.balanceOf(acc1.address));
+            const wrapperAddress = await wrapper.getAddress();
+            await usdt.transfer(wrapperAddress, coinAmount);
+            await token.transfer(wrapperAddress, tokenAmount);
+
+            const deadline = await time.latest() + 120;
+
+            const a1 = await wrapper.addLiqudityCoinToken(coinAmount, tokenAmount, 0, 0, deadline);
+            console.log(a1);
 
         }).timeout(1000000);
     });
