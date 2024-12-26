@@ -40,7 +40,6 @@ describe("Wrapper", function (){
         it("Should work", async function() {
             const {acc1, wrapper, token , usdt } = await loadFixture(deploy);
 
-            const usdtAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
             const usdt_holder = "0x974CaA59e49682CdA0AD2bbe82983419A2ECC400";
             
             await network.provider.request({
