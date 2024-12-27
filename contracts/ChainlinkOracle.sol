@@ -8,9 +8,9 @@ import "./interfaces/IChainlinkOracle.sol";
 contract ChainlinkOracle {
     AggregatorV3Interface internal priceFeed;
 
-    constructor(address aggregatorContract) {
-        priceFeed = AggregatorV3Interface(aggregatorContract);
-    }
+    function setPriceFeed(address _priceFeed) external {
+        priceFeed = AggregatorV3Interface(_priceFeed);
+    } 
 
     function getPrice() external view returns (int) {
         (

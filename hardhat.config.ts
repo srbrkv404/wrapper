@@ -7,7 +7,7 @@ const config: HardhatUserConfig = {
     networks: {
       hardhat: {
         forking: {
-          url: "https://mainnet.infura.io/v3/90ce7ccc69b54f33bb3dacc001bfc489",
+          url: "https://magical-intensive-wish.quiknode.pro/5e8c939e3710ffe62ab21ed84cd882dbb1b0b05f",
         },
       },
     },
